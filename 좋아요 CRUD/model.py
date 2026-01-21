@@ -10,16 +10,18 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    # 커뮤니티 좋아요 기능 (User 모델과 다대다 연결)
+    # --- feature/PostLikeAPI 브랜치에서 추가된 '좋아요' 필드 ---
     like_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, 
         related_name='like_products', 
         blank=True
     )
 
+    # 객체 이름을 관리자 페이지 등에서 확인하기 위한 설정
     def __str__(self):
         return self.name
 
+    # 좋아요 개수를 쉽게 가져오기 위한 계산 속성 (Property)
     @property
     def like_count(self):
         return self.like_users.count()
