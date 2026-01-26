@@ -10,7 +10,6 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    # 좋아요 기능: 유저 모델과 다대다 연결
     like_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, 
         related_name='like_products', 

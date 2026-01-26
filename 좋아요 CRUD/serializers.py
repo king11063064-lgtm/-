@@ -11,6 +11,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         exclude = ('created_at', 'updated_at', 'like_users')
         extra_kwargs = {
+            'image': {'write_only': True},
             'stock': {'write_only': True},
             'description': {'write_only': True},
         }
