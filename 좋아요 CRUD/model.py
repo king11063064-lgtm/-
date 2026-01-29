@@ -9,7 +9,7 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     # ManyToManyField에 'through' 옵션을 사용하여 상세 필드를 가진 Like 모델을 연결합니다.
     like_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,

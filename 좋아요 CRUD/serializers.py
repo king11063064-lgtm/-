@@ -5,7 +5,7 @@ class ProductSerializer(serializers.ModelSerializer):
     image_url = serializers.CharField(read_only=True, source='image.url')
     like_count = serializers.IntegerField(source='like_count', read_only=True)
     is_liked = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Product
         exclude = ('like_users', 'created_at', 'updated_at')

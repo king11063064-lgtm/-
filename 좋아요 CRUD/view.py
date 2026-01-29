@@ -12,7 +12,7 @@ class ProductListCreateAPIView(APIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
     parser_classes = [parsers.JSONParser, parsers.MultiPartParser]
-    
+
     @extend_schema(tags=["Products"], summary="상품 목록 조회")
     def get(self, request):
         products = Product.objects.all().order_by('-created_at')
@@ -31,7 +31,7 @@ class ProductRetrieveUpdateDestroyAPIView(APIView):
     serializer_class = ProductDetailSerializer
     permission_classes = [AllowAny]
     parser_classes = [parsers.JSONParser, parsers.MultiPartParser]
-    
+
     @extend_schema(tags=["Products"], summary="상품 상세 조회")
     def get(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
@@ -55,7 +55,7 @@ class ProductLikeAPIView(APIView):
         # update_or_create를 사용하여 이력을 관리합니다.
         # 처음 누르면 생성(is_liked=True), 이미 있으면 상태만 토글합니다.
         like, created = Like.objects.get_or_create(user=user, product=product)
-        
+
         if not created:
             like.is_liked = not like.is_liked
             like.save()
