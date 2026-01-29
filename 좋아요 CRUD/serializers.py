@@ -1,15 +1,14 @@
 from rest_framework import serializers
-from apps.products.models import Product
+from apps.products.models import Product, Like
 
 class ProductSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(write_only=True)
     image_url = serializers.CharField(read_only=True, source='image.url')
-    like_count = serializers.IntegerField(source='like_users.count', read_only=True)
+    like_count = serializers.IntegerField(source='like_count', read_only=True)
     is_liked = serializers.SerializerMethodField()
     
     class Meta:
         model = Product
-        exclude = ('created_at', 'updated_at', 'like_users')
+        exclude = ('like_users', 'created_at', 'updated_at')
         extra_kwargs = {
             'image': {'write_only': True},
             'stock': {'write_only': True},
@@ -17,25 +16,15 @@ class ProductSerializer(serializers.ModelSerializer):
         }
 
     def get_is_liked(self, obj):
-        # View에서 넘겨준 request 객체를 가져옵니다.
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return obj.like_users.filter(id=request.user.id).exists()
+            # Like 모델에서 현재 유저와 이 상품의 is_liked 상태를 확인
+            like = Like.objects.filter(user=request.user, product=obj).first()
+            return like.is_liked if like else False
         return False
 
-class ProductDetailSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(write_only=True)
-    image_url = serializers.CharField(read_only=True, source='image.url')
-    like_count = serializers.IntegerField(source='like_users.count', read_only=True)
-    is_liked = serializers.SerializerMethodField()
-    
+class ProductDetailSerializer(ProductSerializer):
     class Meta:
         model = Product
         fields = '__all__'
         read_only_fields = ('created_at', 'updated_at', 'like_users')
-
-    def get_is_liked(self, obj):
-        request = self.context.get('request')
-        if request and request.user.is_authenticated:
-            return obj.like_users.filter(id=request.user.id).exists()
-        return False
